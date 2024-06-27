@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClientService} from "../http-client.service";
 import {HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {ListUser} from "../../contracts/list-user";
+import {CreateUser} from "../../contracts/create-user";
 
 @Injectable({
   providedIn: 'root'

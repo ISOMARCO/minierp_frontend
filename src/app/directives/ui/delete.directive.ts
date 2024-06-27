@@ -1,4 +1,4 @@
-import {Directive, ElementRef, HostListener, Input, Renderer2} from '@angular/core';
+import {Directive, ElementRef, Input, Renderer2} from '@angular/core';
 import {HttpClientService} from "../../services/http-client.service";
 import {AlertifyService} from "../../services/alertify.service";
 @Directive({
@@ -19,11 +19,11 @@ export class DeleteDirective {
     renderer.appendChild(element.nativeElement, button);
     renderer.appendChild(button, icon);
     button.setAttribute('style', this.style);
+    this.renderer.listen(button, 'click', this.onClick.bind(this));
   }
   @Input('style') style: string = 'float: right;';
   @Input('controller') controller!: string;
   @Input('id') id!: string;
-  @HostListener('click')
   onClick(): void {
     this.alertify.confirm('are you sure ?', 'Are you sure', () => {
       this.httpClientService.delete({

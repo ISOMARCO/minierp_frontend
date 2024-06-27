@@ -5,12 +5,14 @@ import { routes } from './app.routes';
 import {BrowserModule, provideClientHydration} from '@angular/platform-browser';
 import {HttpClientService} from "./services/http-client.service";
 import {provideHttpClient, withFetch} from "@angular/common/http";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(withFetch()),
     importProvidersFrom(
       BrowserModule,
+      BrowserAnimationsModule,
       HttpClientService,
       RouterModule.forRoot([
         {

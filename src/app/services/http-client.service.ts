@@ -9,7 +9,6 @@ export class HttpClientService {
 
   constructor(
     private httpClient: HttpClient,
-    //@Inject("BASE_API_URL") private baseUrl: string,
     @Inject('BASE_API_URL') private baseUrl: string,
     @Inject("VERSION") private version: string
   ) { }

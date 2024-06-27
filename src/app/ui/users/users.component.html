@@ -14,10 +14,10 @@
       </div>
     </div>
   </section>
-
   <!-- Main content -->
   <section class="content">
     <div class="card">
+      <ngx-spinner type="square-jelly-box" [fullScreen]="false" size="small"></ngx-spinner>
       <div class="card-header">
         <a href="javascript:void(0)" style="float: right;" class="btn btn-primary" data-toggle="modal" data-target="#create-modal"><i class="fas fa-plus"></i></a>
       </div>
@@ -55,7 +55,24 @@
         </div>
         <!-- /.card-body -->
         <div class="card-footer" appDelete [id]="user.id" controller="users">
-
+          <a href="javascript:void(0)" style="float: left;" class="btn btn-outline-success" data-toggle="modal" data-target="#edit-modal"><i class="fas fa-edit"></i></a>
+          <app-modal
+            title="Edit user"
+            modal_id="edit-modal"
+            size="lg"
+            [data]="[
+              {name: 'id', value: user.id, type: 'hidden'},
+              {col_size: 6, placeholder: 'First Name', name: 'firstName', value: user.firstName},
+              {col_size: 6, placeholder: 'Last Name', name: 'lastName', value: user.lastName},
+              {col_size: 6, placeholder: 'Email', icon: 'fas fa-envelope', name: 'email', type: 'email', value: user.email},
+              {col_size: 6, placeholder: 'Username', icon: 'fas fa-user', name: 'username', value: user.username},
+              {col_size: 6, placeholder: 'Password', icon: 'fas fa-lock', name: 'password', type: 'password'},
+              {col_size: 6, placeholder: 'Confirm Password', icon: 'fas fa-lock', name: 'confirmPassword', type: 'password'}
+             ]"
+            [model]="editUser"
+            method="PUT"
+            controller="users"
+          ></app-modal>
         </div>
         <!-- /.card-footer-->
       </div>
@@ -64,41 +81,19 @@
   </section>
   <!-- /.content -->
 </div>
-<div class="modal fade" id="create-modal">
-  <div class="modal-dialog modal-xl">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Create User</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-12 col-md-6">
-            <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="First name">
-            <div class="input-group-append">
-              <span class="input-group-text"><i class="fas fa-user"></i></span>
-            </div>
-          </div>
-          </div>
-          <div class="col-12 col-md-6">
-            <div class="input-group mb-3">
-              <input type="text" class="form-control" placeholder="Last name">
-              <div class="input-group-append">
-                <span class="input-group-text"><i class="fas fa-user"></i></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer justify-content-between">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-    <!-- /.modal-content -->
-  </div>
-  <!-- /.modal-dialog -->
-</div>
+<app-modal
+title="Create user"
+modal_id="create-modal"
+size="lg"
+[data]="[
+      {col_size: 6, placeholder: 'First Name', name: 'firstName'},
+      {col_size: 6, placeholder: 'Last Name', name: 'lastName'},
+      {col_size: 6, placeholder: 'Email', icon: 'fas fa-envelope', name: 'email', type: 'email'},
+      {col_size: 6, placeholder: 'Username', icon: 'fas fa-user', name: 'username'},
+      {col_size: 6, placeholder: 'Password', icon: 'fas fa-lock', name: 'password', type: 'password'},
+      {col_size: 6, placeholder: 'Confirm Password', icon: 'fas fa-lock', name: 'confirmPassword', type: 'password'}
+     ]"
+[model]="createUser"
+controller="users"
+[ignore]="['confirmPassword']"
+></app-modal>
