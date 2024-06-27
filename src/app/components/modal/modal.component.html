@@ -1,0 +1,14 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
+  <ngx-spinner type="square-jelly-box" [fullScreen]="false" size="small"></ngx-spinner>
+  <div class="modal fade" id="{{modal_id}}" appModal
+       [title]="title"
+       [size]="size"
+       [data]="data"
+       [show_save_button]="show_save_button"
+       [model]="model"
+       [controller]="controller"
+       [ignore]="ignore"
+       [method]="method"
+  >
+</div>
+</form>
