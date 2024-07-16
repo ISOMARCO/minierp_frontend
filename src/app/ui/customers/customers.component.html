@@ -1,0 +1,120 @@
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Customer List</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a routerLink="">Home</a></li>
+            <li class="breadcrumb-item active">Customers</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="content">
+    <div class="row">
+      <div class="col-md-2" [ngClass]="{'d-none' : isMobile && !isSearchVisible}">
+        <form [formGroup]="form" class="filterForm" appFilter [data]="[
+          {name: 'fullName', label: 'Full Name'},
+          {name: 'phoneNumber', label: 'Phone number', type: 'number'},
+          {name: 'email', label: 'Email', type: 'email'},
+          {name: 'address', label: 'Address'},
+          {name: 'tin', label: 'VÖEN'}
+          ]"
+              [model]="filterCustomer"
+              (successCallBack)="applyFilter($event)"
+              controller="customers"
+              formClass="filterForm"
+              (clearFilter)="handleSuccess()"
+        >
+        </form>
+      </div>
+      <div class="col-md-10">
+        <div class="card">
+          <div class="card-header">
+            <a href="javascript:void(0)" style="float: right;" class="btn btn-primary" data-toggle="modal" data-target="#create-modal"><i class="fas fa-plus"></i></a>
+          </div>
+          <div class="card-body" infiniteScroll
+               [infiniteScrollDistance]="2"
+               [infiniteScrollThrottle]="50"
+               (scrolled)="onScroll()"
+          >
+            <div class="card collapsed-card" *ngFor="let customer of customers; let i = index;">
+              <div class="card-header">
+                <h3 class="card-title">{{customer.fullName}}</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body" style="overflow-x: scroll;">
+                <table class="table table-bordered">
+                  <thead>
+                  <tr>
+                    <th>Full Name</th>
+                    <th>Address</th>
+                    <th>Phone number</th>
+                    <th>VOEN</th>
+                    <th>Email</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>{{customer.fullName}}</td>
+                    <td style="word-wrap: break-word; white-space: normal;">{{customer.address}}</td>
+                    <td>{{customer.phoneNumber}}</td>
+                    <td>{{customer.tin}}</td>
+                    <td>{{customer.email}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-footer" appDelete [id]="customer.id" controller="customers" (successCallBack)="handleSuccess()">
+                <a href="javascript:void(0)" style="float: left;" class="btn btn-outline-success" data-toggle="modal" [attr.data-target]="'#edit-modal-'+(i + 1)"><i class="fas fa-edit"></i></a>
+                <app-modal
+                  title="Edit customer"
+                  [modal_id]="'edit-modal-'+ (i + 1)"
+                  size="lg"
+                  [data]="[
+              {name: 'id', value: customer.id, type: 'hidden'},
+              {col_size: 12, placeholder: 'Full Name', name: 'fullName', value: customer.fullName},
+              {col_size: 12, placeholder: 'Address', name: 'address', icon: 'fas fa-map-marker-alt', value: customer.address},
+              {col_size: 6, placeholder: 'Phone number', icon: 'fas fa-phone', name: 'phoneNumber', type: 'number', value: customer.phoneNumber},
+              {col_size: 6, placeholder: 'VOEN', icon: 'fas fa-file-invoice', name: 'tin', value: customer.tin},
+              {col_size: 12, placeholder: 'Email', icon: 'fas fa-envelope', name: 'email', type: 'email', value: customer.email}
+             ]"
+                  [model]="editCustomer"
+                  (successCallBack)="handleSuccess()"
+                  method="put"
+                  controller="customers"
+                  [formClass]="'edit-form'+(i + 1)"
+                ></app-modal>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>
+<app-modal
+  title="Create Customer"
+  modal_id="create-modal"
+  size="lg"
+  [data]="[
+      {col_size: 12, placeholder: 'Full Name', name: 'fullName'},
+      {col_size: 12, placeholder: 'Address', name: 'address', icon: 'fas fa-map-marker-alt'},
+      {col_size: 6, placeholder: 'Phone number', icon: 'fas fa-phone', name: 'phoneNumber', type: 'number'},
+      {col_size: 6, placeholder: 'VOEN', icon: 'fas fa-file-invoice', name: 'tin'},
+      {col_size: 12, placeholder: 'Email', icon: 'fas fa-envelope', name: 'email', type: 'email'}
+     ]"
+  [model]="createCustomer"
+  controller="customers"
+  (successCallBack)="handleSuccess()"
+></app-modal>
+

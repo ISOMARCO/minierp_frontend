@@ -47,8 +47,7 @@ export const appConfig: ApplicationConfig = {
         }
       ])
     ),
-    //{provide: 'BASE_API_URL', useValue: 'http://192.168.1.108:5003/api', multi: true},
-    {provide: 'BASE_API_URL', useValue: 'http://localhost:5003/api', multi: true},
+    {provide: 'BASE_API_URL', useValue: 'http://192.168.0.120:5003/api', multi: true},
     {provide: 'VERSION', useValue: 'v1', multi: true}
   ]
 };

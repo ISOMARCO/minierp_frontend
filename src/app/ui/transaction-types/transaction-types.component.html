@@ -1,0 +1,61 @@
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Tranzaksiya tipləri</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a routerLink="">Ana səhifə</a></li>
+            <li class="breadcrumb-item active">Tranzaksiya tipləri</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="content">
+    <div class="row">
+      <div class="col-md-2" [ngClass]="{'d-none' : isMobile && !isSearchVisible}">
+        <form [formGroup]="form" class="filterForm" appFilter [data]="[
+            {name: 'name', label: 'Name'},
+            {name: 'isActive', label: 'Aktiv', type: 'checkbox'},
+            {name: 'isPositive', label: 'Pozitiv', type: 'checkbox'},
+            {name: 'inUse', label: 'İstifadədə', type: 'checkbox'}
+            ]"
+              [model]="filterTransactionType"
+              (successCallBack)="applyFilter($event)"
+              controller="products"
+              formClass="filterForm"
+              (clearFilter)="handleSuccess()"
+        >
+        </form>
+      </div>
+      <div [class.col-md-10]="true" [class.col-md-12]="isMobile && !isSearchVisible">
+        <div class="card">
+          <ngx-spinner type="square-jelly-box" [fullScreen]="false" size="small" color="#ea0000"></ngx-spinner>
+          <div class="card-header">
+            <a href="javascript:void(0)" style="float: left; border-radius: 20px;" (click)="toggleSearch()" *ngIf="isMobile" class="btn btn-secondary mr-4"><i class="fas fa-filter"></i></a>
+            <a href="javascript:void(0)" style="float: right; border-radius: 20px;" class="btn btn-primary" data-toggle="modal" data-target="#create-modal"><i class="fas fa-plus"></i></a>
+          </div>
+          <div class="card-body" infiniteScroll
+               [infiniteScrollDistance]="2"
+               [infiniteScrollThrottle]="50"
+               (scrolled)="onScroll()">
+            <div class="card collapsed-card" *ngFor="let transactionType of transactionTypes; let i = index">
+              <div class="card-header">
+                <h3 class="card-title">{{transactionType.name}}</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool">
+                    <i class="fas fa-eye" *ngIf="transactionType.inUse == true"></i>
+                    <i class="fas fa-edit" *ngIf="transactionType.inUse == false"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

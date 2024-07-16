@@ -1,0 +1,113 @@
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Məhsullar</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a routerLink="">Ana səhifə</a></li>
+            <li class="breadcrumb-item active">Məhsullar</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+      <div class="col-md-2" [ngClass]="{'d-none' : isMobile && !isSearchVisible}">
+        <form [formGroup]="form" class="filterForm" appFilter [data]="[
+            {name: 'name', label: 'Name'},
+            {name: 'type', label: 'Tip'},
+            {name: 'note', label: 'Qeyd'}
+            ]"
+              [model]="filterProduct"
+              (successCallBack)="applyFilter($event)"
+              controller="products"
+              formClass="filterForm"
+              (clearFilter)="handleSuccess()"
+        >
+        </form>
+      </div>
+      <div [class.col-md-10]="true" [class.col-md-12]="isMobile && !isSearchVisible">
+        <div class="card">
+          <ngx-spinner type="square-jelly-box" [fullScreen]="false" size="small" color="#ea0000"></ngx-spinner>
+          <div class="card-header">
+            <a href="javascript:void(0)" style="float: left; border-radius: 20px;" (click)="toggleSearch()" *ngIf="isMobile" class="btn btn-secondary mr-4"><i class="fas fa-filter"></i></a>
+            <a href="javascript:void(0)" style="float: right; border-radius: 20px;" class="btn btn-primary" data-toggle="modal" data-target="#create-modal"><i class="fas fa-plus"></i></a>
+          </div>
+          <div class="card-body" infiniteScroll
+               [infiniteScrollDistance]="2"
+               [infiniteScrollThrottle]="50"
+               (scrolled)="onScroll()">
+            <div class="card collapsed-card" *ngFor="let product of products; let i = index">
+              <div class="card-header">
+                <h3 class="card-title">{{product.name}}</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body" style="overflow-x: scroll;">
+                <table class="table table-bordered">
+                  <thead>
+                  <tr>
+                    <th>Ad</th>
+                    <th>Tip</th>
+                    <th>Qeyd</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>{{product.name}}</td>
+                    <td>{{product.type}}</td>
+                    <td>{{product.note}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer" appDelete [id]="product.id" controller="products" (successCallBack)="handleSuccess()">
+                <a href="javascript:void(0)" style="float: left;" class="btn btn-outline-success" data-toggle="modal" [attr.data-target]="'#edit-modal-'+(i + 1)"><i class="fas fa-edit"></i></a>
+                <app-modal
+                  title="Məhsul güncəllə"
+                  [modal_id]="'edit-modal-'+ (i + 1)"
+                  size="lg"
+                  [data]="[
+                {name: 'id', value: product.id, type: 'hidden'},
+                {col_size: 6, placeholder: 'Ad', name: 'name', value: product.name},
+                {col_size: 6, placeholder: 'Tip', name: 'type', value: product.type},
+                {col_size: 12, element_type: 'textarea', icon: 'far fa-file-alt', placeholder: 'Qeyd', name: 'note', value: product.note}
+               ]"
+                  [model]="editProduct"
+                  (successCallBack)="handleSuccess()"
+                  method="put"
+                  controller="products"
+                  [formClass]="'edit-form'+(i + 1)"
+                ></app-modal>
+              </div>
+              <!-- /.card-footer-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<app-modal
+  title="Məhsul əlavə et"
+  modal_id="create-modal"
+  size="lg"
+  [data]="[
+                {col_size: 6, placeholder: 'Ad', name: 'name'},
+                {col_size: 6, placeholder: 'Tip', name: 'type'},
+                {col_size: 12, element_type: 'textarea', icon: 'far fa-file-alt', placeholder: 'Qeyd', name: 'note'}
+               ]"
+  [model]="createProduct"
+  (successCallBack)="handleSuccess()"
+  controller="products"
+  formClass="create_modal"
+></app-modal>
