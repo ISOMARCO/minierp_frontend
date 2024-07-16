@@ -26,6 +26,18 @@ export const appConfig: ApplicationConfig = {
             {
               path: "users",
               loadComponent: () => import('../app/ui/users/users.component').then(c => c.UsersComponent)
+            },
+            {
+              path: "customers",
+              loadComponent: () => import('../app/ui/customers/customers.component').then(c => c.CustomersComponent)
+            },
+            {
+              path: "products",
+              loadComponent: () => import('./ui/products/products.component').then(c => c.ProductsComponent)
+            },
+            {
+              path: "transaction-types",
+              loadComponent: () => import('../app/ui/transaction-types/transaction-types.component').then(c => c.TransactionTypesComponent)
             }
           ]
         },
@@ -35,8 +47,8 @@ export const appConfig: ApplicationConfig = {
         }
       ])
     ),
-    {provide: 'PHP_BASE_API_URL', useValue: 'http://localhost:8000/api', multi: true},
-    {provide: 'BASE_API_URL', useValue: 'https://localhost:7070/api', multi: true},
+    //{provide: 'BASE_API_URL', useValue: 'http://192.168.1.108:5003/api', multi: true},
+    {provide: 'BASE_API_URL', useValue: 'http://localhost:5003/api', multi: true},
     {provide: 'VERSION', useValue: 'v1', multi: true}
   ]
 };

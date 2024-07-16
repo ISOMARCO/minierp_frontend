@@ -1,6 +1,6 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
-  <ngx-spinner type="square-jelly-box" [fullScreen]="false" size="small"></ngx-spinner>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="{{formClass}}">
   <div class="modal fade" id="{{modal_id}}" appModal
+       [modal_id]="modal_id"
        [title]="title"
        [size]="size"
        [data]="data"
@@ -9,6 +9,10 @@
        [controller]="controller"
        [ignore]="ignore"
        [method]="method"
+       [formClass]="formClass"
+       (successCallBack)="handleSuccess()"
+       [button_title]="buttonTitle"
   >
+    <ngx-spinner type="square-jelly-box" [fullScreen]="false" size="small"></ngx-spinner>
 </div>
 </form>

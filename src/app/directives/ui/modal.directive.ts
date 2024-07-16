@@ -1,7 +1,8 @@
-import {Directive, ElementRef, Input, OnInit, Renderer2} from '@angular/core';
+import {Directive, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2} from '@angular/core';
 import {FormGroup} from "@angular/forms";
 import {HttpClientService} from "../../services/http-client.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import {NgxSpinnerService} from "ngx-spinner";
 declare var $: any;
 @Directive({
   selector: '[appModal]',
@@ -9,12 +10,11 @@ declare var $: any;
 })
 export class ModalDirective implements OnInit{
   constructor(
-    private renderer: Renderer2,
-    private elementRef: ElementRef,
-    private httpClientService: HttpClientService
-  ) {
-
-  }
+    private readonly renderer: Renderer2,
+    private readonly elementRef: ElementRef,
+    private readonly httpClientService: HttpClientService,
+    private readonly spinner: NgxSpinnerService
+  ) {}
   form: FormGroup = new FormGroup({});
   ngOnInit(): void {
     const modalDialog: HTMLElement = this.renderer.createElement('div');
@@ -59,6 +59,15 @@ export class ModalDirective implements OnInit{
         input.setAttribute('class', 'form-control');
         input.setAttribute('formControlName', item.name);
         input.setAttribute('name', item.name);
+        if(item.element_type === 'select' && item.options) {
+          for(const option of item.options) {
+            let optionElement: HTMLElement = this.renderer.createElement('option');
+            optionElement.setAttribute('value', option.value);
+            optionElement.innerHTML = option.text;
+            this.renderer.appendChild(input, optionElement);
+          }
+          input.removeAttribute('type');
+        }
         if(item.value) {
           if(item.element_type === 'textarea')
             input.innerHTML = item.value;
@@ -100,11 +109,11 @@ export class ModalDirective implements OnInit{
       this.renderer.appendChild(modalFooter, closeButton);
       const saveButton: HTMLElement = this.renderer.createElement('button');
       saveButton.setAttribute('class', 'btn btn-primary');
-      saveButton.innerHTML = 'Save';
+      saveButton.innerHTML = this.buttonTitle;
       this.renderer.appendChild(modalFooter, saveButton);
       if(this.show_save_button) {
         this.renderer.listen(saveButton, 'click', () => {
-          const datas: {name: string, value: string}[] = $(".form").serializeArray();
+          const datas: {name: string, value: string}[] = $("."+this.formClass).serializeArray();
           for(const val of datas) {
             if(!this.ignore.includes(val.name)) {
               this.model[val.name] = val.value;
@@ -112,23 +121,38 @@ export class ModalDirective implements OnInit{
           }
           switch(this.method.toLowerCase()) {
             case "post":
+              this.spinner.show();
               this.httpClientService.post({
                 controller: this.controller
               }, this.model).subscribe(result => {
                 console.log(result);
+                this.successCallBack.emit(result);
+                $('.'+this.formClass)[0].reset();
+                $("#"+this.modal_id).modal('hide');
+                this.spinner.hide();
               }, (httpErrorResponse: HttpErrorResponse) => {
                 console.error(httpErrorResponse.error);
+                this.spinner.hide();
               });
               break;
 
             case "put":
+              this.spinner.show();
               this.httpClientService.put({
                 controller: this.controller
               }, this.model).subscribe(result => {
                 console.log(result);
+                this.successCallBack.emit(result);
+                $('.'+this.formClass)[0].reset();
+                $("#"+this.modal_id).modal('hide');
+                this.spinner.hide();
               }, (httpErrorResponse: HttpErrorResponse) => {
                 console.error(httpErrorResponse.error);
+                this.spinner.hide();
               });
+              break;
+            default:
+              console.error("Method not supported");
               break;
           }
         });
@@ -145,7 +169,9 @@ export class ModalDirective implements OnInit{
     icon?: string,
     value?: string,
     name: string;
+    options?: {value: string, text: string}[];
   }[] = [];
+  @Input('modal_id') modal_id?: string;
   @Input('title') title!: string;
   @Input('size') size: string = 'xl';
   @Input('show_save_button') show_save_button: boolean = true;
@@ -153,4 +179,7 @@ export class ModalDirective implements OnInit{
   @Input('ignore') ignore: string[] = [];
   @Input('controller') controller?: string;
   @Input('method') method: string = "POST";
+  @Input('formClass') formClass: string = "form";
+  @Input('button_title') buttonTitle: string = "Save";
+  @Output('successCallBack') successCallBack: EventEmitter<any> = new EventEmitter<any>();
 }

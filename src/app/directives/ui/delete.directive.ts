@@ -1,6 +1,8 @@
-import {Directive, ElementRef, Input, Renderer2} from '@angular/core';
+import {Directive, ElementRef, EventEmitter, Input, Output, Renderer2} from '@angular/core';
 import {HttpClientService} from "../../services/http-client.service";
-import {AlertifyService} from "../../services/alertify.service";
+import {AlertifyService, MessageType, Position} from "../../services/alertify.service";
+import {HttpErrorResponse} from "@angular/common/http";
+
 @Directive({
   selector: '[appDelete]',
   standalone: true
@@ -24,12 +26,22 @@ export class DeleteDirective {
   @Input('style') style: string = 'float: right;';
   @Input('controller') controller!: string;
   @Input('id') id!: string;
+  @Input('title') title: string = 'Silmək istədiyinizdən əminsiniz?';
+  @Input('message') message: string = 'Silmək istədiyinizdən əminsiniz?';
+  @Output('successCallBack') successCallBack: EventEmitter<any> = new EventEmitter<any>();
   onClick(): void {
-    this.alertify.confirm('are you sure ?', 'Are you sure', () => {
+    this.alertify.confirm(this.title, this.message, () => {
       this.httpClientService.delete({
         controller: this.controller
-      }, this.id).subscribe(() => {
-        this.alertify.message('Deleted successfully');
+      }, this.id).subscribe(data => {
+        this.alertify.message('Deleted successfully', {
+          dismissOthers: true,
+          messageType: MessageType.Succcess,
+          position: Position.BottomRight
+        });
+        this.successCallBack.emit();
+      }, (error: HttpErrorResponse) => {
+        console.error(error.message);
       });
     });
   }
