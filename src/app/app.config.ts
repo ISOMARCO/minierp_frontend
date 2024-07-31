@@ -38,6 +38,14 @@ export const appConfig: ApplicationConfig = {
             {
               path: "transaction-types",
               loadComponent: () => import('../app/ui/transaction-types/transaction-types.component').then(c => c.TransactionTypesComponent)
+            },
+            {
+              path: "transaction-type-statuses",
+              loadComponent: () => import('../app/ui/transaction-type-statuses/transaction-type-statuses.component').then(c => c.TransactionTypeStatusesComponent)
+            },
+            {
+              path: "warehouses",
+              loadComponent: () => import('../app/ui/warehouses/warehouses.component').then(c => c.WarehousesComponent)
             }
           ]
         },
@@ -47,7 +55,7 @@ export const appConfig: ApplicationConfig = {
         }
       ])
     ),
-    {provide: 'BASE_API_URL', useValue: 'http://192.168.0.120:5003/api', multi: true},
+    {provide: 'BASE_API_URL', useValue: 'http://localhost:5003/api', multi: true},
     {provide: 'VERSION', useValue: 'v1', multi: true}
   ]
 };

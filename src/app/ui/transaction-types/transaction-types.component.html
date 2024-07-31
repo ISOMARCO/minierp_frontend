@@ -47,8 +47,32 @@
                 <h3 class="card-title">{{transactionType.name}}</h3>
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool">
-                    <i class="fas fa-eye" *ngIf="transactionType.inUse == true"></i>
-                    <i class="fas fa-edit" *ngIf="transactionType.inUse == false"></i>
+                    <i class="fas fa-trash mr-2" *ngIf="transactionType.inUse == false" appDelete [body]="{id: transactionType.id}" [createButton]="false" controller="transactionTypes" (successCallBack)="handleSuccess()"></i>
+                    <i class="fas fa-eye" *ngIf="transactionType.inUse == true" data-toggle="modal" [attr.data-target]="'#edit-modal-'+(i + 1)"></i>
+                    <i class="fas fa-edit" *ngIf="transactionType.inUse == false" data-toggle="modal" [attr.data-target]="'#edit-modal-'+(i + 1)"></i>
+                    <app-modal
+                      title="Tranzaksiya tipləri"
+                      modal_id="edit-modal"
+                      size="lg"
+                      [data]="[
+                        {name: 'id', value: transactionType.id, type: 'hidden'},
+                        {col_size: 12, placeholder: 'Ad', name: 'name', icon: 'fas fa-tag', value: transactionType.name},
+                        {col_size: 6, name: 'isPositive', type: 'checkbox', placeholder: 'Pozitiv ?', value: transactionType.isPositive},
+                        {col_size: 6, name: 'isActive', type: 'checkbox', placeholder: 'Aktiv ?', value: transactionType.isActive},
+                        {col_size: 12, element_type: 'select', apiEndpoint: true, name: 'sourceParameter', icon: 'fas fa-minus-circle', value: transactionType.sourceParameter, apiActions: 'customers,warehouses'},
+                        {col_size: 12, element_type: 'select', apiEndpoint: true, name: 'destinationParameter', icon: 'fas fa-plus-circle', value: transactionType.destinationParameter, apiActions: 'customers,warehouses'},
+                        {col_size: 12, element_type: 'select', options: this.statuses, name: 'sourceToDestination', label: 'Source to destination'}
+                      ]"
+                      [show_save_button]="!transactionType.inUse"
+                      [model]="editTransactionType"
+                      (successCallBack)="handleSuccess()"
+                      [formClass]="'edit-form'+(i + 1)"
+                      [modal_id]="'edit-modal-'+ (i + 1)"
+                      controller="transactionTypes"
+                      formClass="edit_modal"
+                      method="put"
+                    >
+                    </app-modal>
                   </button>
                 </div>
               </div>
@@ -59,3 +83,21 @@
     </div>
   </section>
 </div>
+<app-modal
+  title="Tranzaksiya tipləri"
+  modal_id="create-modal"
+  size="lg"
+  [data]="[
+    {col_size: 12, placeholder: 'Ad', name: 'name', icon: 'fas fa-tag'},
+    {col_size: 6, name: 'isPositive', type: 'checkbox', placeholder: 'Pozitiv ?'},
+    {col_size: 6, name: 'isActive', type: 'checkbox', placeholder: 'Aktiv ?'},
+    {col_size: 12, element_type: 'select', apiEndpoint: true, name: 'sourceParameter', icon: 'fas fa-minus-circle', apiActions: 'customers,warehouses'},
+    {col_size: 12, element_type: 'select', apiEndpoint: true, name: 'destinationParameter', icon: 'fas fa-plus-circle', apiActions: 'customers,warehouses'},
+    {col_size: 12, element_type: 'select', options: this.statuses, name: 'sourceToDestination', label: 'Source to destination'}
+  ]"
+  [model]="createTransactionType"
+  (successCallBack)="handleSuccess()"
+  controller="transactionTypes"
+  formClass="create_modal"
+>
+</app-modal>

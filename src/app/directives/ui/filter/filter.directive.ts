@@ -67,7 +67,8 @@ export class FilterDirective implements OnInit{
       } else {
         const input = this.renderer.createElement(item.element_type);
         input.setAttribute('type', item.type);
-        input.setAttribute('class', 'form-control');
+        if(item.type !== 'checkbox')
+          input.setAttribute('class', 'form-control');
         input.setAttribute('formControlName', item.name);
         input.setAttribute('name', item.name);
         input.setAttribute('id', item.name);

@@ -96,11 +96,11 @@ export class ProductsComponent implements OnInit{
     await this.getProducts(++this.page);
   }
 
-  checkIfMobile() {
+  checkIfMobile(): void {
     this.isMobile = window.innerWidth <= 768;
   }
 
-  toggleSearch() {
+  toggleSearch(): void {
     this.isSearchVisible = !this.isSearchVisible;
   }
 

@@ -73,7 +73,7 @@
                   </tbody>
                 </table>
               </div>
-              <div class="card-footer" appDelete [id]="customer.id" controller="customers" (successCallBack)="handleSuccess()">
+              <div class="card-footer" appDelete [body]="{id: customer.id}" controller="customers" (successCallBack)="handleSuccess()">
                 <a href="javascript:void(0)" style="float: left;" class="btn btn-outline-success" data-toggle="modal" [attr.data-target]="'#edit-modal-'+(i + 1)"><i class="fas fa-edit"></i></a>
                 <app-modal
                   title="Edit customer"

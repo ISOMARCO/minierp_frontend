@@ -8,6 +8,11 @@ import {TransactionTypesService} from "../../services/models/transaction-types.s
 import {HttpErrorResponse} from "@angular/common/http";
 import {FilterDirective} from "../../directives/ui/filter/filter.directive";
 import {FilterTransactionType} from "../../contracts/transaction-types/filter-transaction-type";
+import {ModalComponent} from "../../components/modal/modal.component";
+import {CreateTransactionType} from "../../contracts/transaction-types/create-transaction-type";
+import {EditTransactionType} from "../../contracts/transaction-types/edit-transaction-type";
+import {DeleteDirective} from "../../directives/ui/delete.directive";
+import {ListTransactionTypes} from "../../contracts/transaction-types/list-transaction-types";
 
 @Component({
   selector: 'app-transaction-types',
@@ -20,7 +25,9 @@ import {FilterTransactionType} from "../../contracts/transaction-types/filter-tr
     InfiniteScrollDirective,
     NgForOf,
     FilterDirective,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ModalComponent,
+    DeleteDirective
   ],
   templateUrl: './transaction-types.component.html',
   styleUrl: './transaction-types.component.scss'
@@ -28,6 +35,7 @@ import {FilterTransactionType} from "../../contracts/transaction-types/filter-tr
 export class TransactionTypesComponent implements OnInit{
   form: FormGroup;
   transactionTypes: any = [];
+  statuses: any = [];
   private scrollPosition: number = 0;
   private page: number = 0;
   private pageSize: number = 10;
@@ -36,7 +44,8 @@ export class TransactionTypesComponent implements OnInit{
   public isMobile: boolean = false;
   public isSearchVisible: boolean = false;
   public filterTransactionType: FilterTransactionType = new FilterTransactionType();
-
+  public createTransactionType: CreateTransactionType = new CreateTransactionType();
+  public editTransactionType: EditTransactionType = new EditTransactionType();
   constructor(
     private transactionTypeService: TransactionTypesService,
     private spinner: NgxSpinnerService
@@ -64,11 +73,12 @@ export class TransactionTypesComponent implements OnInit{
     this.isLoading = true;
     if(this.page == 0)
       this.spinner.show();
-    const newTransactionTypes = await this.transactionTypeService.read(page, this.pageSize, () => {
+    const newTransactionTypes: ListTransactionTypes[]|undefined = await this.transactionTypeService.read(page, this.pageSize, () => {
       console.log("Success");
     }, (errorMessage: string) => {
       console.error(errorMessage);
     });
+    this.statuses = [...this.statuses, this.transactionTypeService.statuses()];
     if (newTransactionTypes && newTransactionTypes.length > 0) {
       this.transactionTypes = [...this.transactionTypes, ...newTransactionTypes];
       setTimeout(() => {

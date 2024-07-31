@@ -1,0 +1,93 @@
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Anbarlar</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a routerLink="">Ana səhifə</a></li>
+            <li class="breadcrumb-item active">Anbarlar</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="content">
+    <div class="row">
+      <div class="col-md-2" [ngClass]="{'d-none' : isMobile && !isSearchVisible}">
+        <form [formGroup]="form" class="filterForm" appFilter [data]="[
+            {name: 'name', label: 'Ad'}
+            ]"
+              [model]="filterWarehouse"
+              (successCallBack)="applyFilter($event)"
+              controller="warehouses"
+              formClass="filterForm"
+              (clearFilter)="handleSuccess()"
+        >
+        </form>
+      </div>
+      <div [class.col-md-10]="true" [class.col-md-12]="isMobile && !isSearchVisible">
+        <div class="card">
+          <ngx-spinner type="square-jelly-box" [fullScreen]="false" size="small" color="#ea0000"></ngx-spinner>
+          <div class="card-header">
+            <a href="javascript:void(0)" style="float: left; border-radius: 20px;" (click)="toggleSearch()" *ngIf="isMobile" class="btn btn-secondary mr-4"><i class="fas fa-filter"></i></a>
+            <a href="javascript:void(0)" style="float: right; border-radius: 20px;" class="btn btn-primary" data-toggle="modal" data-target="#create-modal"><i class="fas fa-plus"></i></a>
+            <a href="javascript:void(0)" style="float: right; border-radius: 20px;" class="btn btn-secondary mr-3" (click)="handleSuccess()"><i class="fas fa-sync-alt"></i></a>
+          </div>
+          <div class="card-body" infiniteScroll
+               [infiniteScrollDistance]="2"
+               [infiniteScrollThrottle]="50"
+               (scrolled)="onScroll()">
+            <div class="card collapsed-card" *ngFor="let warehouse of warehouses; let i = index">
+              <div class="card-header">
+                <h3 class="card-title">{{warehouse.name}}</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool">
+                    <i class="fas fa-trash mr-2" *ngIf="warehouse.inUse == false" appDelete [body]="{id: warehouse.id}" [createButton]="false" controller="warehouses" (successCallBack)="handleSuccess()"></i>
+                    <i class="fas fa-eye" *ngIf="warehouse.inUse == true" data-toggle="modal" [attr.data-target]="'#edit-modal-'+(i + 1)"></i>
+                    <i class="fas fa-edit" *ngIf="warehouse.inUse == false" data-toggle="modal" [attr.data-target]="'#edit-modal-'+(i + 1)"></i>
+                    <app-modal
+                      title="Anbarlar"
+                      modal_id="edit-modal"
+                      size="lg"
+                      [data]="[
+                        {name: 'id', value: warehouse.id, type: 'hidden'},
+                        {col_size: 6, placeholder: 'Ad', name: 'name', icon: 'fas fa-warehouse', value: warehouse.name},
+                        {col_size: 6, name: 'isActive', type: 'checkbox', placeholder: 'Aktiv ?', value: warehouse.isActive}
+                      ]"
+                      [model]="editWarehouse"
+                      [show_save_button]="!warehouse.inUse"
+                      (successCallBack)="handleSuccess()"
+                      [formClass]="'edit-form'+(i + 1)"
+                      [modal_id]="'edit-modal-'+ (i + 1)"
+                      controller="warehouses"
+                      formClass="edit_modal"
+                      method="put"
+                    >
+                    </app-modal>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<app-modal
+  title="Anbarlar"
+  modal_id="create-modal"
+  size="lg"
+  [data]="[
+    {col_size: 6, placeholder: 'Ad', name: 'name', icon: 'fas fa-warehouse'},
+    {col_size: 6, name: 'isActive', type: 'checkbox', placeholder: 'Aktiv ?'}
+  ]"
+  [model]="createWarehouse"
+  (successCallBack)="handleSuccess()"
+  controller="warehouses"
+  formClass="create_modal"
+>
+</app-modal>
